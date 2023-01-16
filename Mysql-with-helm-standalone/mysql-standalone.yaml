@@ -1,0 +1,51 @@
+architecture: standalone
+auth:
+  rootPassword: kkapP455t7t ##change your root password here
+global:
+  storageClass: longhorn #change your storageclass here
+image:
+  tag: 8.0.29-debian-10-r30 #change your mysql version here refference here https://hub.docker.com/r/bitnami/mysql/tags
+primary:
+  persistence:
+    enabled: true
+    size: 1Gi ##Change your size to store database here, it can be increased later CANNOT be decreased after
+  resources:
+    limits:
+      cpu: 4 
+      memory: 4Gi
+    requests:
+      cpu: 1
+      memory: 2Gi
+  service:
+    type: ClusterIP
+  configuration: |- ##this configuration will be make binlog not will be generated you can erase it if you want default configuration
+    [mysqld]
+    default_authentication_plugin=mysql_native_password
+    skip-name-resolve
+    explicit_defaults_for_timestamp
+    basedir=/opt/bitnami/mysql
+    plugin_dir=/opt/bitnami/mysql/lib/plugin
+    port=3306
+    socket=/opt/bitnami/mysql/tmp/mysql.sock
+    datadir=/bitnami/mysql/data
+    tmpdir=/opt/bitnami/mysql/tmp
+    max_allowed_packet=16M
+    bind-address=*
+    pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
+    log-error=/opt/bitnami/mysql/logs/mysqld.log
+    character-set-server=UTF8
+    collation-server=utf8_general_ci
+    slow_query_log=0
+    slow_query_log_file=/opt/bitnami/mysql/logs/mysqld.log
+    long_query_time=10.0
+    innodb_file_per_table=OFF <-
+    disable_log_bin
+    [client]
+    port=3306
+    socket=/opt/bitnami/mysql/tmp/mysql.sock
+    default-character-set=UTF8
+    plugin_dir=/opt/bitnami/mysql/lib/plugin
+    [manager]
+    port=3306
+    socket=/opt/bitnami/mysql/tmp/mysql.sock
+    pid-file=/opt/bitnami/mysql/tmp/mysqld.pid
