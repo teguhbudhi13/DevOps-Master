@@ -1,0 +1,17 @@
+controller:
+  config:
+    proxy-body-size: 128m
+    proxy-request-buffering: "off"
+    use-forwarded-headers: "true"
+    enable-underscores-in-headers: "true"
+  ingressClassResource:
+    default: true
+    name: ingress-nginx
+  service:
+    externalTrafficPolicy: Local
+
+tcp:
+  30010: default/postgress-postgresql:5432
+
+## the format above is
+## (port you want to publish to outside): (namespace of the service)/(name of the service):(port of the service)

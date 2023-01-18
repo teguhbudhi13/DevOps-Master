@@ -4,7 +4,7 @@ You need helm installed first
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
-helm upgrade --install mysql -f mysql-standalone.yaml bitnami/mysql
+helm upgrade --install postgress -f helm-postgress.yaml bitnami/postgresql
 ```
 
 after install this you must forward it to ingress-nginx tcp forward

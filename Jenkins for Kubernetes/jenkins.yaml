@@ -92,10 +92,16 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: jenkins-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    acme.cert-manager.io/http01-edit-in-place: "true"
 spec:
-  ingressClassName: nginx ##change to your specific nginx class name
+  tls:
+  - hosts:
+    - jenkins.example.com ##change to url that you want to publish the jenkins
+    secretName: jenkins-tls
   rules:
-  - host: "jenkins.example.com" ##change to url that you want to publish the jenkins
+  - host: "jenkins.example.com" ##change to url that you want to publish the jenkins must same like above
     http:
       paths:
       - pathType: Prefix
