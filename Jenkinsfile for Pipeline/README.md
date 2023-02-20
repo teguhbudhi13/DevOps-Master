@@ -1,7 +1,11 @@
 The goal is to deploy from the "Standardize Yaml for Kubernetes" repository. To do this, follow these steps:
 
 1.	Create a Jenkins container that includes a kubeconfig file which allows it to access the remote cluster where you want to deploy. You can find more information on how to do this in the "Jenkins for Kubernetes" folder.
-2.	Use Jenkins pipeline syntax to clone the repository from the Git source. This will allow you to retrieve the necessary files for deployment.
+2.	Use Jenkins pipeline syntax to clone the repository from the Git source. This will allow you to retrieve the necessary files for deployment like image below.
+
+![image](https://user-images.githubusercontent.com/50268422/220190060-45185e1a-9969-4aca-b1c1-61a703289735.png)
+
+
 3.	Consider using an attached volume for caching images to optimize the build time. This is optional, but it's recommended because it can significantly speed up the process. By using a volume, you can store the image so that it doesn't need to be rebuilt every time a deployment is triggered.
 4.	When building a Docker image, you will need to have the login credentials for the image registry (public or private) to which the image will be pushed. Knowing the username and password is essential to successfully authenticate and push the image to the desired registry.
 
