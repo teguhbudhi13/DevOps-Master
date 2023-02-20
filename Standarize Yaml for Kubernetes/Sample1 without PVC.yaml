@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample1
+  template:
+    metadata:
+      labels:
+        app: sample1
+    spec:
+      imagePullSecrets:
+      - name: pullsecret
+      containers:
+      - name: sample1
+        image: example.harbor.com/production/sample1
+        resources:
+          limits:
+            cpu: "2"
+            memory: "4Gi"
+          requests:
+            cpu: "1"
+            memory: "1Gi"
+        ports:
+        - containerPort: 3001
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample1
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 3001
+  selector:
+    app: sample1
+
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sample1-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    acme.cert-manager.io/http01-edit-in-place: "true"
+spec:
+  tls:
+  - hosts:
+    - sample1.example.com
+    secretName: sample1-tls
+  rules:
+  - host: "sample1.example.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: sample1
+            port:
+              number: 3001
