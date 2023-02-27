@@ -1,0 +1,31 @@
+apiIngress:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+  enabled: true
+  hostname: minio-api.tebe.lyr.id
+  tls:
+  - hosts:
+    - minio-api.tebe.lyr.id
+    secretName: minio-api-tls
+auth:
+  rootPassword: CKf1TngSLqt7G0eMjdM7c25fag
+image:
+  tag: 2023.2.17
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+  enabled: true
+  hostname: minio-console.tebe.lyr.id
+  tls:
+  - hosts:
+    - minio-console.tebe.lyr.id
+    secretName: minio-console-tls
+persistence:
+  existingClaim: minio-dev
+resources:
+  limits:
+    cpu: 4
+    memory: 4Gi
+  requests:
+    cpu: 2
+    memory: 2Gi
