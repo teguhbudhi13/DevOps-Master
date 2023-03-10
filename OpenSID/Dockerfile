@@ -1,20 +1,56 @@
-FROM ubuntu:20.04
+FROM php:7.4-apache
 
-RUN apt-get update && apt-get install -y nginx php7.4-fpm php7.4-mysql \
-    php7.4-curl php7.4-fileinfo php7.4-gd php7.4-iconv php7.4-json \
-    php7.4-mbstring php7.4-mysqli php7.4-mysqlnd php7.4-tidy \
-    php7.4-zip
+# Install required packages and extensions
+RUN apt-get update && \
+    apt-get install -y \
+        curl \
+        file \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libtidy-dev \
+        nano \
+        libonig-dev \
+        libzip-dev \
+        libicu-dev \
+        unzip \
+    && docker-php-ext-install \
+        fileinfo \
+        gd \
+        iconv \
+        json \
+        mbstring \
+        mysqli \
+        pdo_mysql \
+        tidy \
+        zip \
+        intl
 
-COPY default /etc/nginx/sites-available/default
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
-RUN mkdir /var/www/html/opensid
-COPY opensid/ /var/www/html/opensid
-RUN chown -R $USER:www-data /var/www/html/opensid \
-    && chmod -R 775 /var/www/html/opensid
+# Enable mod_rewrite and mod_headers modules
+RUN a2enmod rewrite headers
 
+# Enable SSL module
+RUN a2enmod ssl
 
-RUN ln -sf /dev/stdout /var/log/nginx/access.log && \
-    ln -sf /dev/stderr /var/log/nginx/error.log
+# Copy PHP application files and Composer file
+COPY --chown=www-data:www-data . /var/www/html/
+COPY --chown=www-data:www-data composer.json /var/www/html/
 
-CMD ["sh", "-c", "service php7.4-fpm start && nginx -g 'daemon off;' 2>&1 >/var/log/nginx/access.log"]
+# Set ownership and permissions for application files
+RUN chown -R www-data:www-data /var/www/html && \
+    chmod -R 755 /var/www/html
+
+# Install Composer dependencies
+RUN su -s /bin/bash -c "composer install" www-data
+
+# Expose ports for HTTP and HTTPS
+EXPOSE 80
+#EXPOSE 443
+
+# Start Apache
+CMD apachectl -D FOREGROUND
