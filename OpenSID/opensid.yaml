@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opensid
+  labels:
+    app: opensid
+spec:
+  selector:
+    matchLabels:
+      app: opensid
+  template:
+    metadata:
+      labels:
+        app: opensid
+    spec:
+      imagePullSecrets:
+      - name: pullsecret
+      containers:
+      - name: opensid
+        image: harbor.uswest3.lyr.id/publictest/opensid:2
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "2"
+            memory: "4Gi"
+          requests:
+            cpu: "1"
+            memory: "1Gi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: opensid
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: opensid
+
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: opensid-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+  - hosts:
+    - opensid.examp;e.com
+    secretName: opensid-tls
+  rules:
+  - host: "opensid.examp;e.com"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: opensid
+            port:
+              number: 80
