@@ -1,6 +1,3 @@
-```markdown
-# Custom Kubeconfig Tutorial
-
 In this tutorial, our goal is to create an additional kubeconfig file with specific privileges. We aim to provide a user with read-only privileges or read, write, and update privileges, while preventing them from deleting any resources. The purpose of this configuration is to allow the user to monitor the cluster effectively while minimizing the potential for any harmful actions that could impact the cluster's operation.
 
 By following the steps outlined in this tutorial, you will be able to create a customized kubeconfig file that grants the desired level of access, ensuring that the user has the necessary visibility into the cluster without compromising its stability.
