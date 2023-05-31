@@ -1,0 +1,20 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kube-reader-cluster-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "configmaps", "services", "events", "namespaces", "nodes", "limitranges", "persistentvolumes", "persistentvolumeclaims", "resourcequotas"]
+  verbs: ["get", "watch", "list", "create", "update", "patch"]
+- apiGroups:
+  - apps
+  resources: ["deployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
+- apiGroups:
+  - "helm.fluxcd.io"
+  resources: ["helmreleases"]
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - networking.k8s.io
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch", "create", "update", "patch"]
