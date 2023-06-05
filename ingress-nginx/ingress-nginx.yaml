@@ -1,15 +1,18 @@
 controller:
   config:
-    proxy-body-size: 128m
-    proxy-request-buffering: "off"
-    use-forwarded-headers: "true"
     enable-underscores-in-headers: "true"
+    proxy-body-size: 128m
+    proxy-connect-timeout: "3600"
+    proxy-read-timeout: "3600"
+    proxy-request-buffering: "off"
+    proxy-send-timeout: "3600"
+    send-timeout: "3600"
+    use-forwarded-headers: "true"
   ingressClassResource:
-    default: true
-    name: ingress-nginx
+    default: false
+    name: nginx
   service:
     externalTrafficPolicy: Local
-
 tcp:
   30010: default/postgress-postgresql:5432
 
