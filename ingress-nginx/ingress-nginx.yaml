@@ -8,9 +8,17 @@ controller:
     proxy-send-timeout: "3600"
     send-timeout: "3600"
     use-forwarded-headers: "true"
+    server-tokens: "off"
+    ssl-protocols: "TLSv1.2 TLSv1.3"
+    ssl-ciphers: "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
+    ssl-prefer-server-ciphers: "on"
+    add-header:
+      - "Strict-Transport-Security: max-age=31536000; includeSubDomains; preload"
+      - "X-Content-Type-Options: nosniff"
+      - "X-XSS-Protection: 1; mode=block"
   ingressClassResource:
-    default: false
-    name: nginx
+    default: true
+    name: kt31j30n
   service:
     externalTrafficPolicy: Local
 tcp:
